@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:util="http://www.springframework.org/schema/util"
+		xmlns:jaxws="http://cxf.apache.org/jaxws"
+		xsi:schemaLocation="
+		   http://www.springframework.org/schema/beans
+		   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		   http://cxf.apache.org/jaxws
+		   http://cxf.apache.org/schemas/jaxws.xsd">
+    
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    
+   <!--  <bean id="transformFeature" class="org.apache.cxf.feature.StaxTransformFeature">
+	  <property name="inAppendElements">
+	    <map>
+	      <entry key="tns:one" value="tns:one1"/>
+	    </map>
+	  </property>
+	</bean>  -->
+    
+    <jaxws:endpoint id="iStudentService" implementorClass="com.carvendy.service.StudentServiceImpl"
+    	address="/studentService">
+    	<!-- <jaxws:properties>
+              <entry key="javax.xml.stream.XMLOutputFactory"  value-ref="xmlOutputFactory" />
+        </jaxws:properties> -->
+        <jaxws:outInterceptors>
+        	<bean class="com.carvendy.inteceptor.CharFilterWriterInterceptor"></bean>
+        </jaxws:outInterceptors>
+    </jaxws:endpoint>
+
+	<bean id="invalidCharHandler"   class="com.ctc.wstx.api.InvalidCharHandler$ReplacingHandler">
+         <constructor-arg value=" "/>
+    </bean>
+   <bean id="xmlOutputFactory" class="com.ctc.wstx.stax.WstxOutputFactory"/>
+
+   <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject">
+            <ref local="xmlOutputFactory" />
+        </property>
+        <property name="targetMethod">
+            <value>setProperty</value>
+        </property>
+        <property name="arguments">
+            <list>
+                 <util:constant static-field="com.ctc.wstx.api.WstxOutputProperties.P_OUTPUT_INVALID_CHAR_HANDLER" />
+                 <ref bean="invalidCharHandler" />
+            </list>
+        </property>
+    </bean>
+    
+    
+</beans>
