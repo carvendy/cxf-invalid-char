@@ -10,7 +10,6 @@ import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.staxutils.StaxUtils;
 
-import com.youboy.esb.interceptor.util.CharFilterXMLStreamWriter;
 
 public class CharFilterWriterInterceptor extends AbstractPhaseInterceptor<Message> { 
 
